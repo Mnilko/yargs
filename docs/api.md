@@ -271,14 +271,14 @@ discussion of the advanced features exposed in the Command API.
 .completion([cmd], [description], [fn])
 ---------------------------------------
 
-Enable bash/zsh-completion shortcuts for commands and options.
+Enable bash-completion shortcuts for commands and options.
 
-`cmd`: When present in `argv._`, will result in the `.bashrc` or `.zshrc` completion script
-being outputted. To enable bash/zsh completions, concat the generated script to your
-`.bashrc` or `.bash_profile` (or `.zshrc` for zsh).
+`cmd`: When present in `argv._`, will result in the `.bashrc` completion script
+being outputted. To enable bash completions, concat the generated script to your
+`.bashrc` or `.bash_profile`.
 
 `description`: Provide a description in your usage instructions for the command
-that generates the completion scripts.
+that generates bash completion scripts.
 
 `fn`: Rather than relying on yargs' default completion functionality, which
 shiver me timbers is pretty awesome, you can provide your own completion
@@ -684,11 +684,6 @@ uses the `.version` functionality, validation fails, or the command handler
 fails. Calling `.exitProcess(false)` disables this behavior, enabling further
 actions after yargs have been validated.
 
-<a name="exit"></a>.exit(code, err)
----------
-Manually indicate that the program should exit, and provide context about why we
-wanted to exit. Follows the behaviour set by `.exitProcess()`.
-
 <a name="fail"></a>.fail(fn)
 ---------
 
@@ -929,7 +924,6 @@ Locales currently supported:
 * **ja:** Japanese.
 * **ko:** Korean.
 * **nb:** Norwegian Bokmål.
-* **nl:** Dutch.
 * **pirate:** American Pirate.
 * **pl:** Polish.
 * **pt:** Portuguese.
@@ -946,7 +940,7 @@ To submit a new translation for yargs:
 
 *The [Microsoft Terminology Search](http://www.microsoft.com/Language/en-US/Search.aspx) can be useful for finding the correct terminology in your locale.*
 
-<a name="middleware"></a>.middleware(callbacks, [applyBeforeValidation])
+<a name="middleware"></a>.middleware(callbacks)
 ------------------------------------
 
 Define global middleware functions to be called first, in list order, for all cli command.  
@@ -963,42 +957,11 @@ yargs
   })
   .middleware([mwFunc1, mwFunc2]).argv;
 ```
-
 When calling `myCommand` from the command line, mwFunc1 gets called first, then mwFunc2, and finally the command's handler.  The console output is:
-
 ```
 I'm a middleware function
 I'm another middleware function
 Running myCommand!
-```
-
-Middleware can be applied before validation by setting the second parameter to `true`.  This will execute the middleware prior to validation checks, but after parsing.
-
-Middleware is passed two parameters `argv`, the current parsed options object,
-and `yargs` the yargs instance itself, which provides contextual information
-about the current state of parsing.
-
-A modified `argv` object will ultimately be what is passed to a command's
-handler function.
-
-```js
-// populating home directory from an environment variable.
-require('yargs')
-  .middleware(function (argv) {
-    if (process.env.HOME) argv.home = process.env.HOME
-  }, true)
-  .command('configure-home', "do something with a user's home directory",
-    {
-      'home': {
-        'demand': true,
-        'string': true
-      }
-    },
-    function(argv) {
-      console.info(`we know the user's home directory is ${argv.home}`)
-    }
-  )
-  .parse()
 ```
 
 <a name="nargs"></a>.nargs(key, count)
@@ -1173,25 +1136,6 @@ parser.parse(bot.userText, function (err, argv, output) {
 
 ***Note:*** Providing a callback to `parse()` disables the [`exitProcess` setting](#exitprocess) until after the callback is invoked.
 
-<a name="parsed"></a>.parsed
-------------
-If the arguments have not been parsed, this property is `false`.
-
-If the arguments have been parsed, this contain detailed parsed arguments. See
-the documentation in [yargs-parser `.detailed()`][https://github.com/yargs/yargs-parser/blob/master/README.md#requireyargs-parserdetailedargs-opts]
-for details of this object
-
-<a name="parserConfiguration"></a>.parserConfiguration(obj)
-------------
-`parserConfiguration()` allows you to configure advanced yargs features.
-
-`obj` accepts the following configuration options:
-
-* `sort-commands` when set to `true` (boolean) will sort the commands added, the default is `false`.
-
-For additional configuration options, see [yargs-parser's configuration](https://github.com/yargs/yargs-parser#configuration).
-
-_Note: configuraton should be top level keys on the `obj` passed to `parserConfiguration`, not populated under the _configuration_ key, as in `yargs-parser`.
 
 <a name="pkg-conf"></a>
 .pkgConf(key, [cwd])
